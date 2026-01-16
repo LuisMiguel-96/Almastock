@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h3>📦 Inventario</h3>
+
+<!-- Agregar producto -->
+<form method="POST" action="{{ url_for('main.add_product') }}" class="row g-2 mb-4">
+    <div class="col-md-6">
+        <input type="text" name="name" class="form-control" placeholder="Nombre del producto" required>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100">Agregar</button>
+    </div>
+</form>
+
+<!-- Tabla -->
+<div class="table-responsive">
+<table class="table table-bordered bg-white shadow-sm">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Stock</th>
+            <th>Movimiento</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>
+                {% if product.stock <= 5 %}
+                    <span class="badge bg-danger">{{ product.stock }}</span>
+                {% else %}
+                    <span class="badge bg-success">{{ product.stock }}</span>
+                {% endif %}
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('main.movement') }}" class="d-flex gap-2">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="number" name="quantity" class="form-control" min="1" required>
+                    <select name="type" class="form-select">
+                        <option value="entrada">Entrada</option>
+                        <option value="salida">Salida</option>
+                    </select>
+                    <button class="btn btn-dark">✔</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}
